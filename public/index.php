@@ -24,7 +24,11 @@ use App\Tablas\Usuario;
     $articulo_id = obtener_get(('id_art'));
     $usuario = \App\Tablas\Usuario::logueado();
     $usuario_id = $usuario->id;
-    
+
+    $etiquetas = obtener_get('etiquetas');
+    $lista_de_etiquetas = explode(" ", $etiquetas);
+    $lista2 = "('" . implode("', '", $lista_de_etiquetas). "')";
+
     $pdo = conectar();
     if (isset($nota) && isset($articulo_id) && isset($usuario_id) && $nota != '' && $usuario_id != '' && $articulo_id != '' && $nota != null & $articulo_id != null & $usuario_id != null){
         
@@ -40,33 +44,38 @@ use App\Tablas\Usuario;
         $sent3->execute([':nota' => $nota, ':articulo_id' => $articulo_id, ':usuario_id' => $usuario_id ]);
         }
     };
-    
-    $sent = $pdo->query("SELECT * FROM articulos ORDER BY codigo");
 
+    
+    if (isset($lista_de_etiquetas) && !empty($lista_de_etiquetas)){
+    var_dump($lista2);
+    /*$sent = $pdo->prepare("SELECT * FROM articulos WHERE id IN (
+        SELECT articulo_id FROM articulos_etiquetas WHERE etiqueta_id IN (
+            SELECT id FROM etiquetas WHERE nombre IN (:lista_de_etiquetas) )
+        )
+    )");
+    $sent->execute([':lista_de_etiquetas' => $lista2]);
+    var_dump($lista2);
+    }
+    else{
+        $sent = $pdo->query("SELECT * FROM articulos ORDER BY codigo");*/
+    }
+    
     ?>
 
     <div class="container mx-auto">
         <?php require '../src/_menu.php' ?>
         <?php require '../src/_alerts.php' ?>
-        <div class="flex">
-            
-
-        <?= $nota ?>
-        <?= $articulo_id ?>
-        <?= $usuario_id ?>
 
         <form action="" method="GET">
-            <select name="id" id="id">
-            <?php foreach ($sent2 as $fila2) : ?>
-                <option value="<?= $fila2['id'] ?>"><?= $fila2['nombre_categoria'] ?></option>
-                <?php endforeach ?>
-            </select>
+            <label for="etiquetas">Busca por etiquetas: </label>
+            <input type="text" name="etiquetas" id="etiquetas">
             <button type="submit" class="inline-flex items-center py-2 px-3.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Buscar</button>
         </form>
 
-
-
-
+    <div class="flex">
+            <?= $lista_de_etiquetas?>
+            <?= $etiquetas?>
+            <?= $lista2?>
             <main class="flex-1 grid grid-cols-3 gap-4 justify-center justify-items-center">
                 <?php foreach ($sent as $fila) : ?>
                     <div class="p-6 max-w-xs min-w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -81,7 +90,7 @@ use App\Tablas\Usuario;
                             $sent7 = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios GROUP BY articulo_id HAVING articulo_id = :articulo_id');
                             $sent7->execute([':articulo_id' => $fila['id']]);
                             $count2 = $sent7->fetchColumn();
-                            if ($count == 0) {
+                            if ($count2 == 0) {
                                 echo "<p>Este producto aun no fue evaluado</p>";
                             }
                             else{

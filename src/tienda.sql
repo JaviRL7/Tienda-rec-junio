@@ -7,6 +7,20 @@ CREATE TABLE articulos (
     precio      numeric(7, 2) NOT NULL,
     stock       int           NOT NULL
 );
+DROP TABLE IF EXISTS etiquetas CASCADE;
+
+CREATE TABLE etiquetas (
+    id          bigserial   PRIMARY KEY,
+    nombre      varchar(25) NOT NULL UNIQUE
+);
+
+DROP TABLE IF EXISTS articulos_etiquetas CASCADE;
+
+CREATE TABLE articulos_etiquetas (
+    articulo_id bigint NOT NULL REFERENCES articulos (id),
+    etiqueta_id  bigint NOT NULL REFERENCES etiquetas (id),
+    PRIMARY KEY (articulo_id, etiqueta_id)
+);
 
 DROP TABLE IF EXISTS categorias CASCADE;
 
@@ -59,6 +73,7 @@ CREATE TABLE articulos_facturas (
 
 -- Carga inicial de datos de prueba:
 
+
 INSERT INTO articulos (codigo, descripcion, precio, stock)
     VALUES ('18273892389', 'Yogur piña', 200.50, 4),
            ('83745828273', 'Tigretón', 50.10, 2),
@@ -73,3 +88,13 @@ INSERT INTO usuarios (usuario, password, validado)
            ('pepe', crypt('pepe', gen_salt('bf', 10)), false),
            ('juan', crypt('juan', gen_salt('bf', 10)), true),
            ('jose', crypt('jose', gen_salt('bf', 10)), true);
+
+INSERT INTO etiquetas (nombre)
+    VALUES ('Cafe'),
+            ('Informacion'),
+            ('Descuento');
+
+INSERT INTO articulos_etiquetas (articulo_id, etiqueta_id)
+    VALUES (1,2),
+            (2,2),
+            (2,1);
