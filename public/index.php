@@ -29,7 +29,35 @@ use App\Tablas\Usuario;
     $lista_de_etiquetas = explode(" ", $etiquetas);
     $lista2 = "('" . implode("', '", $lista_de_etiquetas). "')";
 
+    $in = "";
+    $i = 0;
+
     $pdo = conectar();
+
+    if (isset($lista_de_etiquetas) && !empty($lista_de_etiquetas)){
+        foreach ($lista_de_etiquetas as $eti){
+            $key = ":id".$i++;
+            $in .= "$key,";
+            $parametro[$key] = $eti;
+            }
+        $in = rtrim($in,",");
+    
+        $sent = $pdo->prepare("SELECT DISTINCT(a.*) 
+                            FROM articulos a JOIN articulos_etiquetas ae ON a.id = ae.articulo_id 
+                            JOIN etiquetas e ON e.id = ae.etiqueta_id 
+                            WHERE e.nombre IN (:in) 
+                            AND a.id in (select articulo_id etiqueta_id 
+                            FROM articulos_etiquetas GROUP BY articulo_id HAVING count(*) = 1)");
+        $sent->execute([':in' => $in]);
+        }
+        else{
+            $sent = $pdo->query("SELECT * FROM articulos ORDER BY codigo");
+        }
+        
+
+
+
+
     if (isset($nota) && isset($articulo_id) && isset($usuario_id) && $nota != '' && $usuario_id != '' && $articulo_id != '' && $nota != null & $articulo_id != null & $usuario_id != null){
         
         $sent4 = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios WHERE articulo_id = :articulo_id AND usuario_id = :usuario_id');
@@ -45,21 +73,6 @@ use App\Tablas\Usuario;
         }
     };
 
-    
-    if (isset($lista_de_etiquetas) && !empty($lista_de_etiquetas)){
-    var_dump($lista2);
-    /*$sent = $pdo->prepare("SELECT * FROM articulos WHERE id IN (
-        SELECT articulo_id FROM articulos_etiquetas WHERE etiqueta_id IN (
-            SELECT id FROM etiquetas WHERE nombre IN (:lista_de_etiquetas) )
-        )
-    )");
-    $sent->execute([':lista_de_etiquetas' => $lista2]);
-    var_dump($lista2);
-    }
-    else{
-        $sent = $pdo->query("SELECT * FROM articulos ORDER BY codigo");*/
-    }
-    
     ?>
 
     <div class="container mx-auto">
