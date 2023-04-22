@@ -78,10 +78,13 @@ INSERT INTO articulos (codigo, descripcion, precio, stock)
     VALUES ('18273892389', 'Yogur piña', 200.50, 4),
            ('83745828273', 'Tigretón', 50.10, 2),
            ('51736128495', 'Disco duro SSD 500 GB', 150.30, 0),
-           ('83746828273', 'Tigretón', 50.10, 3),
-           ('51786128435', 'Disco duro SSD 500 GB', 150.30, 5),
-           ('83745228673', 'Tigretón', 50.10, 8),
-           ('51786198495', 'Disco duro SSD 500 GB', 150.30, 1);
+           ('83746828273', 'Kinder Bueno', 50.10, 3),
+           ('51786128435', 'Camara', 150.30, 5),
+           ('83745228673', 'Manga Oshi no Ko', 50.10, 8),
+           ('83741111113', 'Puerta para laura', 50.10, 8),
+           ('83745244673', 'Manga Berserk', 50.10, 8),
+           ('83745444673', 'Manga Kaguya', 50.10, 8),
+           ('51786198495', 'Pelicula Naruto', 150.30, 1);
 
 INSERT INTO usuarios (usuario, password, validado)
     VALUES ('admin', crypt('admin', gen_salt('bf', 10)), true),
@@ -92,9 +95,16 @@ INSERT INTO usuarios (usuario, password, validado)
 INSERT INTO etiquetas (nombre)
     VALUES ('Cafe'),
             ('Informacion'),
+            ('Entretenimiento'),
+            ('Lectura'),
+            ('Dulce'),
             ('Descuento');
 
 INSERT INTO articulos_etiquetas (articulo_id, etiqueta_id)
     VALUES (1,2),
             (2,2),
+            (2,3),
+            (3,1),
+            (4,5),
+            (3,2),
             (2,1);

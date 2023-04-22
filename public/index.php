@@ -34,7 +34,7 @@ use App\Tablas\Usuario;
 
     $pdo = conectar();
 
-    if (isset($lista_de_etiquetas) && !empty($lista_de_etiquetas)){
+    if ($lista_de_etiquetas != [""]){
         foreach ($lista_de_etiquetas as $eti){
             $key = ":id".$i++;
             $in .= "$key,";
@@ -46,8 +46,7 @@ use App\Tablas\Usuario;
                             FROM articulos a JOIN articulos_etiquetas ae ON a.id = ae.articulo_id 
                             JOIN etiquetas e ON e.id = ae.etiqueta_id 
                             WHERE e.nombre IN ($in) 
-                            AND a.id in (select articulo_id etiqueta_id 
-                            FROM articulos_etiquetas GROUP BY articulo_id HAVING count(*) = $total)");                  
+                            ");                  
         $sent->execute($parametro);
         }
         else{
