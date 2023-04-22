@@ -41,14 +41,14 @@ use App\Tablas\Usuario;
             $parametro[$key] = $eti;
             }
         $in = rtrim($in,",");
-    
+        $total = count($lista_de_etiquetas);
         $sent = $pdo->prepare("SELECT DISTINCT(a.*) 
                             FROM articulos a JOIN articulos_etiquetas ae ON a.id = ae.articulo_id 
                             JOIN etiquetas e ON e.id = ae.etiqueta_id 
-                            WHERE e.nombre IN (:in) 
+                            WHERE e.nombre IN ($in) 
                             AND a.id in (select articulo_id etiqueta_id 
-                            FROM articulos_etiquetas GROUP BY articulo_id HAVING count(*) = 1)");
-        $sent->execute([':in' => $in]);
+                            FROM articulos_etiquetas GROUP BY articulo_id HAVING count(*) = $total)");                  
+        $sent->execute($parametro);
         }
         else{
             $sent = $pdo->query("SELECT * FROM articulos ORDER BY codigo");
