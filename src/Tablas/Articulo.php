@@ -27,6 +27,10 @@ class Articulo extends Modelo
     {
         return static::obtener($id, $pdo) !== null;
     }
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function getCodigo()
     {

@@ -52,10 +52,7 @@ use App\Tablas\Usuario;
         else{
             $sent = $pdo->query("SELECT * FROM articulos ORDER BY codigo");
         }
-        
-
-
-
+        /* Cambiar consulta por la del where in*/
 
     if (isset($nota) && isset($articulo_id) && isset($usuario_id) && $nota != '' && $usuario_id != '' && $articulo_id != '' && $nota != null & $articulo_id != null & $usuario_id != null){
         
@@ -157,16 +154,27 @@ use App\Tablas\Usuario;
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <th scope="col" class="py-3 px-6">Descripción</th>
                                 <th scope="col" class="py-3 px-6">Cantidad</th>
+                                <th scope="col" class="py-3 px-6">Etiquetas</th>
                             </thead>
                             <tbody>
-                                <?php foreach ($carrito->getLineas() as $id => $linea): ?>
-                                    <?php
+                                <?php foreach ($carrito->getLineas() as $id => $linea):
                                     $articulo = $linea->getArticulo();
                                     $cantidad = $linea->getCantidad();
+                                    $sent = $pdo->prepare('SELECT DISTINCT(e.nombre) FROM etiquetas e 
+                                                                JOIN articulos_etiquetas ae ON ae.etiqueta_id = e.id 
+                                                                JOIN articulos a ON a.id = ae.articulo_id 
+                                                                WHERE a.id = :articulo_id');
+                                        $sent->execute([':articulo_id' => $articulo->getId()]);
+                                        $etiquetas = $sent->fetchAll();
                                     ?>
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <td class="py-4 px-6"><?= $articulo->getDescripcion() ?></td>
                                         <td class="py-4 px-6 text-center"><?= $cantidad ?></td>
+                                        <td class="py-4 px-6 text-center"> 
+                                        <?php foreach ($etiquetas as $etiqueta): ?>
+                                            <?= $etiqueta["nombre"] ?>
+                                        <?php endforeach ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach ?>
                             </tbody>
