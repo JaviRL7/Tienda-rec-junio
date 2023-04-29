@@ -45,8 +45,9 @@ use App\Tablas\Usuario;
         $sent = $pdo->prepare("SELECT DISTINCT(a.*) 
                             FROM articulos a JOIN articulos_etiquetas ae ON a.id = ae.articulo_id 
                             JOIN etiquetas e ON e.id = ae.etiqueta_id 
-                            WHERE e.nombre IN ($in) 
-                            ");                  
+                            WHERE e.nombre IN ($in) and a.id in (SELECT articulo_id from articulos_etiquetas GROUP BY articulo_id HAVING count(articulo_id) >= :count)
+                            ");  
+        $parametro[':count'] = $total;             
         $sent->execute($parametro);
         }
         else{
@@ -80,11 +81,8 @@ use App\Tablas\Usuario;
             <input type="text" name="etiquetas" id="etiquetas">
             <button type="submit" class="inline-flex items-center py-2 px-3.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Buscar</button>
         </form>
-
+<br>
     <div class="flex">
-            <?= $lista_de_etiquetas?>
-            <?= $etiquetas?>
-            <?= $lista2?>
             <main class="flex-1 grid grid-cols-3 gap-4 justify-center justify-items-center">
                 <?php foreach ($sent as $fila) : ?>
                     <div class="p-6 max-w-xs min-w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -108,7 +106,7 @@ use App\Tablas\Usuario;
                                 $nota_actual = $sent8->fetchColumn();
                                 echo "<p>$nota_actual</p>";
                             }
-                        
+                        /* Cambiar esto, quitar los numero y comprobar con code gpt*/
 
                         ?>
                         
