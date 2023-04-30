@@ -71,4 +71,16 @@ class Usuario extends Modelo
             ':password' => password_hash($password, PASSWORD_DEFAULT),
         ]);
     }
+    public function articulos_votados(){
+        $pdo = $pdo ?? conectar();
+
+        $sent = $pdo->prepare('SELECT a.nombre 
+                                 FROM usuarios u
+                                 JOIN articulos_usuarios au on au.usuario_id = u.id
+                                 JOIN articulos a on au.articulo_id = a.id
+                                 WHERE u.id = :id ');
+        $sent->execute([':id' => $this->id]);
+        $filas = $sent->fetchAll(PDO::FETCH_COLUMN);
+        return $filas;
+    }
 }
