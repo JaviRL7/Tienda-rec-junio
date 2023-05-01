@@ -2,7 +2,7 @@
     <div class="container flex flex-wrap items-center justify-between mx-auto">
         <a href="/" class="flex items-center">
             <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Flowbite Logo" />
-            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">MiTienda</span>
         </a>
         <div class="flex items-center md:order-2">
             <?php if (\App\Tablas\Usuario::esta_logueado()) : ?>
@@ -22,6 +22,9 @@
                 <?php endif ?>
                 <ul class="py-1" aria-labelledby="user-menu-button">
                     <li>
+                        <a href="/tu_perfil.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Perfil</a>
+                    </li>
+                    <li>
                         <a href="/dashboard.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
                     </li>
                     <li>
@@ -30,6 +33,7 @@
                     <li>
                         <a href="/tus_notas.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Tus notas</a>
                     </li>
+                    
                 </ul>
             </div>
             <button data-collapse-toggle="mobile-menu-2" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">

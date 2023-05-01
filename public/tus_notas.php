@@ -35,13 +35,6 @@ $pdo = conectar();
                                             WHERE u.id = :id');
                     $sent->execute([':id' => $id_usuario ]);
                     $filas = $sent->fetchAll();
-
-                    
-                    $sent8 = $pdo->prepare('SELECT ROUND(AVG(nota),2) FROM articulos_usuarios 
-                                            GROUP BY articulo_id 
-                                            HAVING articulo_id = :articulo_id');
-                                $sent8->execute([':articulo_id' => $fila['id']]);
-                                $nota_actual = $sent8->fetchColumn();
                     ?>
                     <?php foreach ($filas as $fila) :?>
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

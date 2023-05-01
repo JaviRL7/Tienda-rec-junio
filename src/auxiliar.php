@@ -60,3 +60,9 @@ function redirigir_login()
 {
     header('Location: /login.php');
 }
+function obtener_etiquetas(){
+    $pdo = conectar();
+    $sent = $pdo->query('SELECT * FROM etiquetas ORDER BY nombre');
+    $etiquetas = $sent->fetchAll();
+    return $etiquetas;
+}

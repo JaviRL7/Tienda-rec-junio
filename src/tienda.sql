@@ -51,6 +51,9 @@ CREATE TABLE usuarios (
     id       bigserial    PRIMARY KEY,
     usuario  varchar(255) NOT NULL UNIQUE,
     password varchar(255) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    hobbies VARCHAR(100) NOT NULL,
+    ciudad VARCHAR(100) NOT NULL,
     validado bool         NOT NULL
 );
 
@@ -86,11 +89,11 @@ INSERT INTO articulos (codigo, descripcion, precio, stock)
            ('83745444673', 'Manga Kaguya', 50.10, 8),
            ('51786198495', 'Pelicula Naruto', 150.30, 1);
 
-INSERT INTO usuarios (usuario, password, validado)
-    VALUES ('admin', crypt('admin', gen_salt('bf', 10)), true),
-           ('pepe', crypt('pepe', gen_salt('bf', 10)), false),
-           ('juan', crypt('juan', gen_salt('bf', 10)), true),
-           ('jose', crypt('jose', gen_salt('bf', 10)), true);
+INSERT INTO usuarios (usuario, password, fecha_nacimiento, ciudad, validado)
+    VALUES ('admin', crypt('admin', gen_salt('bf', 10)),'05/12/1998', 'Sanlucar de Barrameda', true),
+           ('pepe', crypt('pepe', gen_salt('bf', 10)),'03/1/1997', 'Chipiona', false),
+           ('juan', crypt('juan', gen_salt('bf', 10)), '14/7/2000', 'Madrid', true),
+           ('jose', crypt('jose', gen_salt('bf', 10)), '31/12/1999', 'Malaga', true);
 
 INSERT INTO etiquetas (nombre)
     VALUES ('Cafe'),
