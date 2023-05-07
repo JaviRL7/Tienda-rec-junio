@@ -12,7 +12,8 @@ $etiquetas = obtener_etiquetas();
 $nombre_completo = obtener_get('nombre_completo');
 $fecha_nacimiento = obtener_get('fecha_nacimiento');
 $ciudad = obtener_get('ciudad');
-
+$usuario = \App\Tablas\Usuario::logueado();
+$usuario_id = $usuario->id;
 $intereses = array();
 foreach($etiquetas as $etiqueta){
     $intereses[] = obtener_get($etiqueta['nombre']);
@@ -75,6 +76,21 @@ foreach($etiquetas as $etiqueta){
             </div>
             <button type="submit" class="inline-flex items-center py-2 px-3.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enviar</button>
         </form>
+        <?php 
+        if (isset($nombre_completo) && $nombre_completo != ""){
+            $array_nombre = explode(" ", $nombre_completo);
+        }
+        if ( count($array_nombre) == 3 && isset($array_nombre) && isset($ciudad) && isset($fecha_nacimiento)){
+            $apellido1 = $array_nombre[1];
+            $apellido2 = $array_nombre[2];
+            $nueva_fecha = intval($fecha_nacimiento);
+            $sent = $pdo->prepare("UPDATE usuarios SET apellido1 = :apellido1, apellido2 = :apellido2, fecha_nacimiento = :fecha_nacimiento, ciudad = :ciudad WHERE id = :usuario_id") ;
+            $sent->execute([':apellido1' => $apellido1, ':apellido2' => $apellido2, ':ciudad' => $ciudad, ':usuario_id' => $usuario_id, ':fecha_nacimiento' => $fecha_nacimiento ]);
+        }
+        if (isset($intereses)){
+            $sent = $pdo->prepare("INSERT IN TO usuarios_etiquetas (usuario_id, etiqueta_id) values (:usuario_id, :etiqueta_id)");
+        }
+        ?>
     </div>
     <script src="/js/flowbite/flowbite.js"></script>
 </body>

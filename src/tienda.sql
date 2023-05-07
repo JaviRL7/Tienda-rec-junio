@@ -76,6 +76,12 @@ CREATE TABLE articulos_facturas (
     PRIMARY KEY (articulo_id, factura_id)
 );
 
+CREATE TABLE usuarios_etiquetas (
+    usuario_id bigint NOT NULL REFERENCES usuarios (id),
+    etiqueta_id  bigint NOT NULL REFERENCES etiquetas (id),
+    PRIMARY KEY (usuario_id, etiqueta_id)
+);
+
 -- Carga inicial de datos de prueba:
 
 
