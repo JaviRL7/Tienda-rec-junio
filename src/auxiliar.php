@@ -74,14 +74,14 @@ function completar_usuarios($apellido1, $apellido2, $fecha_nacimiento, $ciudad, 
     $sent->execute([':apellido1' => $apellido1, ':apellido2' => $apellido2, ':ciudad' => $ciudad, ':usuario_id' => $usuario_id, ':fecha_nacimiento' => $fecha_nacimiento ]);
 }
 
-function completar_usuarios_etiquetas(){
+/*function completar_usuarios_etiquetas(){
     $pdo = conectar();
-}
-function aux(){
+}/*
+/*function aux(){
     $numero1 = $usuario_id;
     $array_etiquetas = $etiquetas;
     nuevo_array = [];
     foreach ($array_etiquetas as $eti){
-        $nuevo_array[] = [$numero, $eti];
+        $nuevo_array[] = [$numero, $eti]; 
     }
-}
+}*/
