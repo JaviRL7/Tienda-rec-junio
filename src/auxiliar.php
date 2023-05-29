@@ -73,7 +73,23 @@ function completar_usuarios($apellido1, $apellido2, $fecha_nacimiento, $ciudad, 
     $sent = $pdo->prepare("UPDATE usuarios SET apellido1 = :apellido1, apellido2 = :apellido2, fecha_nacimiento = :fecha_nacimiento, ciudad = :ciudad WHERE id = :usuario_id") ;
     $sent->execute([':apellido1' => $apellido1, ':apellido2' => $apellido2, ':ciudad' => $ciudad, ':usuario_id' => $usuario_id, ':fecha_nacimiento' => $fecha_nacimiento ]);
 }
-
+function completar($usuario_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT count(usuario) FROM usuario WHERE id = :id AND (apellido1 is NULL or apellido2 is NULL or ciudad is NULL or fecha_nacimiento is NULL )");
+    $sent->execute([':id'=>$usuario_id]);
+    $resultado = $sent->fetchColumn();
+    if ($resultado == 0){
+        $sent = $pdo->prepare("UPDATE usuarios SET completo = 'true' WHERE id = :usuario_id");
+        $sent->execute([':usuario_id'=>$usuario_id]);
+    }
+}
+function comprobar_completo($usuario_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT completo FROM usuarios WHERE id = :id");
+    $sent->execute([':id'=>$usuario_id]);
+    $resultado = $sent->fetchColumn();
+    return $resultado;
+}
 /*function completar_usuarios_etiquetas(){
     $pdo = conectar();
 }/*

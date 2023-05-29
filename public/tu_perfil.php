@@ -38,15 +38,20 @@ foreach($etiquetas as $etiqueta){
         <?php require_once '../src/_menu.php' ?>
     </div>
     <div class="max-w-md mx-auto mt-4">
-        <?= hh($nombre_completo) ?>
-        <?= hh($ciudad) ?>
-        <?= hh($fecha_nacimiento) ?>
-        
-        <ul>
-            <?php foreach ($intereses as $interes) : ?>
-                <li><?= hh($interes) ?></li>
-            <?php endforeach ?>
-        </ul>
+
+        <?php
+        if (isset($intereses)){
+            $array_id = array(); 
+            $sent = $pdo->prepare("SELECT id FROM etiquetas WHERE nombre = :nombre");
+            foreach($intereses as $int){
+                $sent->execute([':nombre'=> $int]);
+                $result = $sent->fetch();
+                if ($result) {
+                    array_push($array_id, $result['id']);
+                }
+            }
+        }
+        ?>
         <h3 class="text-center text-2xl font-bold mb-4">Tus datos</h3>
         <form method="GET" action="">
             <div class="mb-3">
@@ -76,32 +81,31 @@ foreach($etiquetas as $etiqueta){
             </div>
             <button type="submit" class="inline-flex items-center py-2 px-3.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enviar</button>
         </form>
-        <?php
-        $array_id = array(); 
-        foreach($intereses as $int){
-            $sent = $pdo->prepare("SELECT id FROM etiquetas WHERE nombre = :nombre");
-            $sent->execute([':nombre'=> $int]);
-            array_push($array_id, $sent->fetch());
-        }
-        ?>
         <?php 
         if (isset($nombre_completo) && $nombre_completo != ""){
             $array_nombre = explode(" ", $nombre_completo);
         }
-        if ( count($array_nombre) == 3 && isset($array_nombre) && isset($ciudad) && isset($fecha_nacimiento)){
+        if (isset($array_nombre) && isset($ciudad) && isset($fecha_nacimiento)){
+            if (count($array_nombre) == 3 ){
             $apellido1 = $array_nombre[1];
             $apellido2 = $array_nombre[2];
             $nueva_fecha = intval($fecha_nacimiento);
             $sent = $pdo->prepare("UPDATE usuarios SET apellido1 = :apellido1, apellido2 = :apellido2, fecha_nacimiento = :fecha_nacimiento, ciudad = :ciudad WHERE id = :usuario_id") ;
             $sent->execute([':apellido1' => $apellido1, ':apellido2' => $apellido2, ':ciudad' => $ciudad, ':usuario_id' => $usuario_id, ':fecha_nacimiento' => $fecha_nacimiento ]);
         }
-        $array_completo = [];
-        foreach($array_id as $valor){
-            $array_completo[] = [$usuario_id, $valor];
         }
-        if (isset($intereses)){
-            $sent = $pdo->prepare("INSERT IN TO usuarios_etiquetas (usuario_id, etiqueta_id) values (:usuario_id, :etiqueta_id)");
-        }   $sent->execute([':usuario_id'=>$array_completo[0],':etiqueta_id'=>$array_completo[1]]);
+        if (isset($array_id)){
+            foreach ($array_id as $valor){
+                $sent = $pdo->prepare("SELECT count(usuario_id) FROM usuarios_etiquetas WHERE usuario_id = :usuario_id AND etiqueta_id = :etiqueta_id");
+                $sent->execute([':usuario_id'=> $usuario_id, ':etiqueta_id'=> $valor]);
+                $count = $sent->fetchColumn();
+                if ($count == 0){
+                $sent = $pdo->prepare("INSERT INTO usuarios_etiquetas (usuario_id, etiqueta_id) VALUES (:usuario_id, :etiqueta_id)");
+                $sent->execute([':usuario_id'=> $usuario_id, 'etiqueta_id'=> $valor]);
+            }
+        }
+        }
+        completar($usuario_id) 
         ?>
     </div>
     <script src="/js/flowbite/flowbite.js"></script>
