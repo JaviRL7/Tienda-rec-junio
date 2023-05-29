@@ -75,7 +75,7 @@ function completar_usuarios($apellido1, $apellido2, $fecha_nacimiento, $ciudad, 
 }
 function completar($usuario_id){
     $pdo = conectar();
-    $sent = $pdo->prepare("SELECT count(usuario) FROM usuario WHERE id = :id AND (apellido1 is NULL or apellido2 is NULL or ciudad is NULL or fecha_nacimiento is NULL )");
+    $sent = $pdo->prepare("SELECT count(usuario) FROM usuarios WHERE id = :id AND (apellido1 is NULL or apellido2 is NULL or ciudad is NULL or fecha_nacimiento is NULL )");
     $sent->execute([':id'=>$usuario_id]);
     $resultado = $sent->fetchColumn();
     if ($resultado == 0){
@@ -89,6 +89,27 @@ function comprobar_completo($usuario_id){
     $sent->execute([':id'=>$usuario_id]);
     $resultado = $sent->fetchColumn();
     return $resultado;
+}
+function obetener_datos_usuarios($usuario_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT * FROM usuarios WHERE id = :id");
+    $sent->execute([':id'=>$usuario_id]);
+    $resultado = $sent->fetch();
+    return $resultado;
+}
+function obetener_datos_usuarios_etiquetas($usuario_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT e.nombre FROM usuarios_etiquetas ue JOIN etiquetas e ON e.id = ue.etiqueta_id WHERE usuario_id = :id");
+    $sent->execute([':id'=>$usuario_id]);
+    $intereses = $sent->fetchAll();
+    return $intereses;
+}
+function obtener_nombre_etiqueta($etiqueta_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT nombre FROM etiquetas WHERE id = :etiqueta_id");
+    $sent->execute([':id'=>$etiqueta_id]);
+    $etiquetas = $sent->fetch();
+    return $etiquetas;
 }
 /*function completar_usuarios_etiquetas(){
     $pdo = conectar();

@@ -57,16 +57,16 @@ use App\Tablas\Usuario;
 
     if (isset($nota) && isset($articulo_id) && isset($usuario_id) && $nota != '' && $usuario_id != '' && $articulo_id != '' && $nota != null & $articulo_id != null & $usuario_id != null){
         
-        $sent4 = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios WHERE articulo_id = :articulo_id AND usuario_id = :usuario_id');
-        $sent4->execute([':usuario_id' => $usuario_id, ':articulo_id' => $articulo_id,]);
-        $count = $sent4->fetchColumn();
+        $sent = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios WHERE articulo_id = :articulo_id AND usuario_id = :usuario_id');
+        $sent->execute([':usuario_id' => $usuario_id, ':articulo_id' => $articulo_id,]);
+        $count = $sent->fetchColumn();
         if ($count != 0){
-            $sent5 = $pdo->prepare('UPDATE articulos_usuarios SET nota = :nota WHERE usuario_id = :usuario_id AND articulo_id = :articulo_id');
-            $sent5->execute([':nota' => $nota, ':articulo_id' => $articulo_id, ':usuario_id' => $usuario_id ]);
+            $sent = $pdo->prepare('UPDATE articulos_usuarios SET nota = :nota WHERE usuario_id = :usuario_id AND articulo_id = :articulo_id');
+            $sent->execute([':nota' => $nota, ':articulo_id' => $articulo_id, ':usuario_id' => $usuario_id ]);
         }
         else{
-        $sent3 = $pdo->prepare("INSERT INTO articulos_usuarios (articulo_id, usuario_id, nota) VALUES ( :articulo_id, :usuario_id, :nota)");
-        $sent3->execute([':nota' => $nota, ':articulo_id' => $articulo_id, ':usuario_id' => $usuario_id ]);
+        $sent = $pdo->prepare("INSERT INTO articulos_usuarios (articulo_id, usuario_id, nota) VALUES ( :articulo_id, :usuario_id, :nota)");
+        $sent->execute([':nota' => $nota, ':articulo_id' => $articulo_id, ':usuario_id' => $usuario_id ]);
         }
     };
 
@@ -94,16 +94,16 @@ use App\Tablas\Usuario;
                         <br>
                         <p>Nota del producto: </p> 
                             <?php 
-                            $sent7 = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios GROUP BY articulo_id HAVING articulo_id = :articulo_id');
-                            $sent7->execute([':articulo_id' => $fila['id']]);
-                            $count2 = $sent7->fetchColumn();
+                            $sent = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios GROUP BY articulo_id HAVING articulo_id = :articulo_id');
+                            $sent->execute([':articulo_id' => $fila['id']]);
+                            $count2 = $sent->fetchColumn();
                             if ($count2 == 0) {
                                 echo "<p>Este producto aun no fue evaluado</p>";
                             }
                             else{
-                                $sent8 = $pdo->prepare('SELECT ROUND(AVG(nota),2) FROM articulos_usuarios GROUP BY articulo_id HAVING articulo_id = :articulo_id');
-                                $sent8->execute([':articulo_id' => $fila['id']]);
-                                $nota_actual = $sent8->fetchColumn();
+                                $sent = $pdo->prepare('SELECT ROUND(AVG(nota),2) FROM articulos_usuarios GROUP BY articulo_id HAVING articulo_id = :articulo_id');
+                                $sent->execute([':articulo_id' => $fila['id']]);
+                                $nota_actual = $sent->fetchColumn();
                                 echo "<p>$nota_actual</p>";
                             }
                         /* Cambiar esto, quitar los numero y comprobar con code gpt*/
