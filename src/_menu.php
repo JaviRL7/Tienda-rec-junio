@@ -15,20 +15,20 @@
             <?php endif ?>
             <!-- Dropdown menu -->
             <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
-                <?php if (\App\Tablas\Usuario::esta_logueado()): ?>
+                <?php if (\App\Tablas\Usuario::esta_logueado()) : ?>
                     <div class="px-4 py-3">
                         <span class="block text-sm text-gray-900 dark:text-white"><?= hh(\App\Tablas\Usuario::logueado()->usuario) ?></span>
                     </div>
                 <?php endif ?>
                 <ul class="py-1" aria-labelledby="user-menu-button">
                     <li>
-                        <?php 
+                        <?php
                         $usuario = \App\Tablas\Usuario::logueado();
                         $usuario_id = $usuario->id;
                         ?>
-                        <?php if (comprobar_completo($usuario_id)): ?>
+                        <?php if (comprobar_completo($usuario_id)) : ?>
                             <a href="/perfil_completo.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Perfil</a>
-                        <?php else: ?>
+                        <?php else : ?>
                             <a href="/tu_perfil.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Perfil</a>
                         <?php endif ?>
                     </li>
@@ -41,7 +41,7 @@
                     <li>
                         <a href="/tus_notas.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Tus notas</a>
                     </li>
-                    
+
                 </ul>
             </div>
             <button data-collapse-toggle="mobile-menu-2" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
@@ -63,11 +63,15 @@
                     <a href="#" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
                 </li>
                 <li>
-                    <a href="Precios.php" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Pricing</a>
+                    <?php if ($usuario_id ==1) : ?>
+                        <a href="cupones.php" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cupones</a>
+                    <?php else : ?>
+                        <a href="#" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Opcion no disponible</a>
+                    <?php endif ?>
                 </li>
                 <li>
                     <a href="#" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
                 </li>
             </ul>
         </div>
-    </nav>
+</nav>

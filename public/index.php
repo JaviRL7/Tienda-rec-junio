@@ -92,6 +92,23 @@ use App\Tablas\Usuario;
                         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><?= hh($fila['descripcion']) ?></p>
                         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Existencias: <?= hh($fila['stock']) ?></p>
                         <br>
+
+
+                        <?php if (comprobar_ofertas($fila['id'])) :?>
+
+                        <p>La oferta de esta producto es: <?= hh(obtener_ofertas($fila['id']))?> </p>
+                        <?php else: ?>
+                        <p>Este producto no tiene oferta</p>
+                        <?php endif ?>
+
+
+
+
+
+
+
+
+
                         <p>Nota del producto: </p> 
                             <?php 
                             $sent = $pdo->prepare('SELECT COUNT(articulo_id) FROM articulos_usuarios GROUP BY articulo_id HAVING articulo_id = :articulo_id');

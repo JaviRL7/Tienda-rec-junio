@@ -76,14 +76,48 @@ CREATE TABLE articulos_facturas (
     PRIMARY KEY (articulo_id, factura_id)
 );
 
+DROP TABLE IF EXISTS usuarios_etiquetas CASCADE;
+
 CREATE TABLE usuarios_etiquetas (
     usuario_id bigint NOT NULL REFERENCES usuarios (id),
     etiqueta_id  bigint NOT NULL REFERENCES etiquetas (id),
     PRIMARY KEY (usuario_id, etiqueta_id)
 );
 
+DROP TABLE IF EXISTS ofertas CASCADE;
+
+CREATE TABLE ofertas (
+    id bigserial PRIMARY KEY,  
+    nombre varchar(25)
+);
+
+DROP TABLE IF EXISTS articulos_ofertas CASCADE;
+
+CREATE TABLE articulos_ofertas(
+    articulo_id bigint NOT NULL REFERENCES articulos(id),
+    oferta_id bigint NOT NULL REFERENCES ofertas(id),
+    fecha_caducidad DATE NOT NULL,
+    PRIMARY KEY (articulo_id, oferta_id)
+);
+
+DROP table if EXISTS cupones CASCADE;
+CREATE TABLE cupones(
+    id bigserial PRIMARY KEY,
+    nombre varchar(25) NOT NULL,
+    descuento bigint NOT NULL
+);
+
+DROP table if EXISTS usuarios_cupones CASCADE;
+CREATE TABLE usuarios_cupones(
+    usuario_id bigint NOT NULL REFERENCES usuarios(id),
+    cupon_id bigint NOT NULL REFERENCES cupones(id),
+    cantidad bigint NOT NULL,
+    PRIMARY KEY (usuario_id, cupon_id)
+);
+
 -- Carga inicial de datos de prueba:
 
+            
 
 INSERT INTO articulos (codigo, descripcion, precio, stock)
     VALUES ('18273892389', 'Yogur piña', 200.50, 4),
@@ -111,6 +145,11 @@ INSERT INTO etiquetas (nombre)
             ('Dulce'),
             ('Descuento');
 
+INSERT INTO ofertas (nombre)
+    VALUES ('2x1'),
+            ('- 25%'),
+            ('- 15%');
+
 INSERT INTO articulos_etiquetas (articulo_id, etiqueta_id)
     VALUES (1,2),
             (2,2),
@@ -119,3 +158,17 @@ INSERT INTO articulos_etiquetas (articulo_id, etiqueta_id)
             (4,5),
             (3,2),
             (2,1);
+
+
+
+INSERT INTO articulos_ofertas (articulo_id, oferta_id, fecha_caducidad)
+    VALUES (1,2,'15/08/2023'),
+            (2,2,'14/09/2023'),
+            (4,1,'14/09/2023'),
+            (5,3,'14/09/2023'),
+            (3,2,'18/08/2023');
+
+INSERT INTO cupones(nombre, descuento)
+    VALUES ('Descuento10', 10),
+            ('Descuento20', 20),
+            ('DescuentoFnatic', 50);

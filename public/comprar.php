@@ -18,6 +18,8 @@
     }
 
     $carrito = unserialize(carrito());
+    
+
 
     if (obtener_post('_testigo') !== null) {
         $pdo = conectar();
@@ -81,16 +83,44 @@
                     <th scope="col" class="py-3 px-6">Cantidad</th>
                     <th scope="col" class="py-3 px-6">Precio</th>
                     <th scope="col" class="py-3 px-6">Importe</th>
+                    <th scope="col" class="py-3 px-6">Oferta</th>
                 </thead>
                 <tbody>
                     <?php $total = 0 ?>
                     <?php foreach ($carrito->getLineas() as $id => $linea) : ?>
                         <?php
+                        
                         $articulo = $linea->getArticulo();
                         $codigo = $articulo->getCodigo();
                         $cantidad = $linea->getCantidad();
                         $precio = $articulo->getPrecio();
-                        $importe = $cantidad * $precio;
+
+                        $articulo_id = $articulo->getId();
+                        $oferta_id = obtener_ofertas_id($articulo_id);
+                        $restante = 1;
+                        $extra = 0;
+
+                        switch ($oferta_id) {
+                            case 1 && $cantidad ==1:
+                                $restante = 1;
+                                break;
+                            case 1 && $cantidad % 2 == 0:
+                                $restante = 0.5;
+                                break;
+                            case 1 && $cantidad >2 && $cantidad %2 != 0:
+                                $restante = 1;
+                                $extra = $precio;
+                                break;    
+                            case 2:
+                                $restante = 0.75;
+                                break;
+                            case 3:
+                                $restante = 0.85;
+                                break;
+                            
+                        };
+
+                        $importe = ($cantidad * $precio)*$restante - $extra;
                         $total += $importe;
                         ?>
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -103,6 +133,9 @@
                             <td class="py-4 px-6 text-center">
                                 <?= dinero($importe) ?>
                             </td>
+                            <td>
+                                <?= obtener_ofertas($articulo_id)?>
+                            </td>
                         </tr>
                     <?php endforeach ?>
                 </tbody>
@@ -110,6 +143,7 @@
                     <td colspan="3"></td>
                     <td class="text-center font-semibold">TOTAL:</td>
                     <td class="text-center font-semibold"><?= dinero($total) ?></td>
+
                 </tfoot>
             </table>
             <form action="" method="POST" class="mx-auto flex mt-4">

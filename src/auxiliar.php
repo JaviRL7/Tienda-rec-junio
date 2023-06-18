@@ -111,6 +111,46 @@ function obtener_nombre_etiqueta($etiqueta_id){
     $etiquetas = $sent->fetch();
     return $etiquetas;
 }
+
+function obtener_ofertas($articulo_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT o.nombre FROM ofertas o JOIN articulos_ofertas ao on o.id = ao.oferta_id WHERE ao.articulo_id = :articulo_id");
+    $sent->execute([':articulo_id'=>$articulo_id]);
+    $ofertas = $sent->fetchColumn();
+    return $ofertas;
+}
+
+
+function obtener_ofertas_id($articulo_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT o.id FROM ofertas o JOIN articulos_ofertas ao on o.id = ao.oferta_id WHERE ao.articulo_id = :articulo_id");
+    $sent->execute([':articulo_id'=>$articulo_id]);
+    $ofertas = $sent->fetchColumn();
+    return $ofertas;
+}
+function obtener_ofertas_fecha($articulo_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT fecha_caducidad FROM articulos_ofertas ao WHERE articulo_id = :articulo_id");
+    $sent->execute([':articulo_id'=>$articulo_id]);
+    $ofertas = $sent->fetchColumn();
+    return $ofertas;
+}
+
+function comprobar_ofertas ($articulo_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT count(o.nombre) FROM ofertas o JOIN articulos_ofertas ao on o.id = ao.oferta_id WHERE ao.articulo_id = :articulo_id");
+    $sent->execute([':articulo_id'=>$articulo_id]);
+    $count = $sent->fetchColumn();
+    if($count>0){
+    return true;
+    }
+}
+function obtener_cupones (){
+    $pdo = conectar();
+    $sent = $pdo->query("SELECT * FROM cupones");
+    $cupones = $sent->fetchAll();
+    return $cupones;
+}
 /*function completar_usuarios_etiquetas(){
     $pdo = conectar();
 }/*
