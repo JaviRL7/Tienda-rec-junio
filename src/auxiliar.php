@@ -57,7 +57,14 @@ function volver_admin()
 {
     header("Location: /admin/");
 }
-
+function volver_cupones()
+{
+    header("Location: /cupones.php");
+}
+function ir_a_dasboard()
+{
+    header("Location: /dashboard.php");
+}
 function redirigir_login()
 {
     header('Location: /login.php');
@@ -150,6 +157,42 @@ function obtener_cupones (){
     $sent = $pdo->query("SELECT * FROM cupones");
     $cupones = $sent->fetchAll();
     return $cupones;
+}
+
+function insertar_cupones($usuario_id, $cupon_id, $cantidad){
+    $pdo = conectar();
+
+    $sent = $pdo->prepare('SELECT COUNT(usuario_id) FROM usuarios_cupones WHERE cupon_id = :cupon_id AND usuario_id = :usuario_id');
+        $sent->execute([':usuario_id' => $usuario_id, ':cupon_id' => $cupon_id]);
+        $count = $sent->fetchColumn();
+        if ($count != 0){
+            $sent = $pdo->prepare('UPDATE usuarios_cupones SET cantidad = :cantidad WHERE usuario_id = :usuario_id AND cupon_id = :cupon_id');
+            $sent->execute([':cantidad' => $cantidad, ':cupon_id' => $cupon_id, ':usuario_id' => $usuario_id ]);
+        }
+        else{
+            $sent = $pdo->prepare("INSERT INTO usuarios_cupones (usuario_id, cupon_id, cantidad) VALUES ( :usuario_id, :cupon_id, :cantidad)");
+            $sent->execute([':usuario_id' => $usuario_id, ':cupon_id' => $cupon_id,':cantidad' => $cantidad]);
+        }
+}
+
+function obtener_cupones_usuario($usuario_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT c.nombre as nombre, uc.cantidad as cantidad, c.descuento as descuento, c.id as id FROM cupones c JOIN usuarios_cupones uc ON c.id = uc.cupon_id WHERE uc.usuario_id = :usuario_id");
+    $sent->execute([':usuario_id' => $usuario_id]);
+    $cupones_usuario = $sent->fetchAll();
+    return $cupones_usuario;
+}
+function restar_cupon($usuario_id, $cupon_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare('UPDATE usuarios_cupones SET cantidad = GREATEST(cantidad -1, 0) WHERE usuario_id = :usuario_id AND cupon_id = :cupon_id');
+    $sent->execute([':cupon_id' => $cupon_id, ':usuario_id' => $usuario_id ]);
+}
+function obtener_descuento($cupon_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT descuento FROM cupones WHERE id = :cupon_id");
+    $sent->execute([':cupon_id' => $cupon_id]);
+    $descuento= $sent->fetchColumn();
+    return $descuento;
 }
 /*function completar_usuarios_etiquetas(){
     $pdo = conectar();
