@@ -32,12 +32,18 @@ class Factura extends Modelo
     {
         return $this->created_at;
     }
-    public function getCuponId(){
-        return $this->cupon_id;
-    }
+
     public function getUsuarioId()
     {
         return $this->usuario_id;
+    }
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCuponId(){
+        return $this->cupon_id;
     }
 
     public function getTotal(?PDO $pdo = null)
@@ -99,5 +105,36 @@ class Factura extends Modelo
             $res[] = new Linea($linea);
         }
         return $res;
+    }
+
+    public function getDescuento(?PDO $pdo = null){
+        $cupon_id = $this->getCuponId();
+
+        if(isset($cupon_id)){
+            $pdo = conectar();
+            $sent = $pdo->prepare("SELECT descuento FROM cupones WHERE cupones.id = :cupon_id");
+            $sent->execute([':cupon_id' => $cupon_id]);
+            $resultado = $sent->fetch();
+
+            $descuento = $resultado["descuento"];
+        }
+        return $descuento;
+    }
+
+    public function getCupon(?PDO $pdo = null){
+        $cupon_id = $this->getCuponId();
+
+        if(isset($cupon_id)){
+            $pdo = conectar();
+            $sent = $pdo->prepare("SELECT cupon FROM cupones WHERE cupones.id = :cupon_id");
+            $sent->execute([':cupon_id' => $cupon_id]);
+            $resultado = $sent->fetch();
+
+            $cupon = $resultado['cupon'] ;
+            
+        } else {
+            $cupon = $resultado['cupon'] = 'NINGUNO';
+        }
+        return $cupon;
     }
 }

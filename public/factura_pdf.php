@@ -40,7 +40,14 @@ foreach ($factura->getLineas($pdo) as $linea) {
     $total += $importe;
     $precio = dinero($precio);
     $importe = dinero($importe);
+    $factura_id = $factura->getId();
 
+    if (isset($factura_id) && $factura_id != null) {
+        $cupon_id = obtener_cupon_factura($factura_id);
+        if(isset($cupon_id)&&$cupon_id!=null){
+        $descuento = dinero($total - $total * (obtener_descuento($cupon_id)/100));
+        }
+    }
     $filas_tabla .= <<<EOF
         <tr>
             <td>$codigo</td>
@@ -48,6 +55,7 @@ foreach ($factura->getLineas($pdo) as $linea) {
             <td>$cantidad</td>
             <td>$precio</td>
             <td>$importe</td>
+            <td>$descuento</td>
         </tr>
     EOF;
 }
@@ -64,6 +72,7 @@ $res = <<<EOT
         <th>Cantidad</th>
         <th>Precio</th>
         <th>Importe</th>
+        <th>Descuento</th>
     </tr>
     <tbody>
         $filas_tabla

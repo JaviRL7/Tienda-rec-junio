@@ -27,11 +27,7 @@ session_start() ?>
         [':usuario_id' => Usuario::logueado()->id]
     );
 
-    $cupon_id = $factura->getCuponId();
-
-    if (isset($cupon_id)) {
-        $descuento = obtener_descuento($cupon_id);
-    }
+    
 
     ?>
 
@@ -51,6 +47,14 @@ session_start() ?>
                             'Y-m-d H:i:s',
                             $factura->getCreatedAt()
                         )->setTimezone(new DateTimeZone('Europe/Madrid'));
+                        $factura_id = $factura->getId();
+
+                        if (isset($factura_id) && $factura_id != null) {
+                            $cupon_id = obtener_cupon_factura($factura_id);
+                            if(isset($cupon_id)&&$cupon_id!=null){
+                            $descuento = obtener_descuento($cupon_id);
+                            }
+                        }
                         ?>
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td class="py-4 px-6">

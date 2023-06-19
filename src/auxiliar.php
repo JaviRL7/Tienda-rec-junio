@@ -194,6 +194,13 @@ function obtener_descuento($cupon_id){
     $descuento= $sent->fetchColumn();
     return $descuento;
 }
+function obtener_cupon_factura($factura_id){
+    $pdo = conectar();
+    $sent = $pdo->prepare("SELECT cupon_id FROM facturas WHERE id = :factura_id");
+    $sent->execute([':factura_id' => $factura_id]);
+    $cupon= $sent->fetchColumn();
+    return $cupon;
+}
 /*function completar_usuarios_etiquetas(){
     $pdo = conectar();
 }/*
