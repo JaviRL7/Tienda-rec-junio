@@ -133,7 +133,10 @@
 
                         $importe = ($cantidad * $precio) * $restante - $extra;
                         $total += $importe;
-
+                        if (isset($cupon) && $cupon!=null){
+                            $descuento = obtener_descuento($cupon);
+                            $total_res = $total - $total*($descuento/100);
+                        }
                         ?>
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td class="py-4 px-6"><?= $articulo->getCodigo() ?></td>
@@ -152,7 +155,11 @@
                     <td colspan="3"></td>
                     <td class="text-center font-semibold">TOTAL:</td>
                     <td class="text-center font-semibold"><?= dinero($total) ?></td>
-
+                        <?php if (isset($cupon) && $cupon!=null) :?>
+                            <td>
+                                total descuento por cupon: <?=$total_res?>
+                            </td>
+                        <?php endif ?>
                 </tfoot>
                 <div>
                     <form action="" method="GET">
