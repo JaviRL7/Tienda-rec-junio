@@ -177,7 +177,7 @@ function insertar_cupones($usuario_id, $cupon_id, $cantidad){
 
 function obtener_cupones_usuario($usuario_id){
     $pdo = conectar();
-    $sent = $pdo->prepare("SELECT c.nombre as nombre, uc.cantidad as cantidad, c.descuento as descuento, c.id as id FROM cupones c JOIN usuarios_cupones uc ON c.id = uc.cupon_id WHERE uc.usuario_id = :usuario_id");
+    $sent = $pdo->prepare("SELECT c.nombre as nombre, uc.cantidad as cantidad, c.descuento as descuento, c.id as identidad FROM cupones c JOIN usuarios_cupones uc ON c.id = uc.cupon_id WHERE uc.usuario_id = :usuario_id");
     $sent->execute([':usuario_id' => $usuario_id]);
     $cupones_usuario = $sent->fetchAll();
     return $cupones_usuario;
