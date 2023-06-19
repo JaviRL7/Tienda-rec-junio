@@ -41,10 +41,10 @@
 
 
         $pdo->beginTransaction();
-        $sent = $pdo->prepare('INSERT INTO facturas (usuario_id)
-                               VALUES (:usuario_id)
+        $sent = $pdo->prepare('INSERT INTO facturas (usuario_id, cupon_id)
+                               VALUES (:usuario_id, :cupon_id)
                                RETURNING id');
-        $sent->execute([':usuario_id' => $usuario_id]);
+        $sent->execute([':usuario_id' => $usuario_id, ':cupon_id' => $cupon]);
         $factura_id = $sent->fetchColumn();
         $lineas = $carrito->getLineas();
         $values = [];
