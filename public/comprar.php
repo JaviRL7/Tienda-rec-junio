@@ -16,6 +16,8 @@
     if (!\App\Tablas\Usuario::esta_logueado()) {
         return redirigir_login();
     }
+    $usuario = \App\Tablas\Usuario::logueado();
+    $usuario_id = $usuario->id;
 
     $carrito = unserialize(carrito());
 
@@ -32,8 +34,7 @@
             }
         }
         // Crear factura
-        $usuario = \App\Tablas\Usuario::logueado();
-        $usuario_id = $usuario->id;
+        
         $pdo->beginTransaction();
         $sent = $pdo->prepare('INSERT INTO facturas (usuario_id)
                                VALUES (:usuario_id)
@@ -72,8 +73,16 @@
     ?>
 
     <div class="container mx-auto">
+
         <?php require '../src/_menu.php' ?>
         <div class="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
+        <form action="" method="GET">
+            <select name="cupon" id="">
+                <?php foreach(obtener_cupones_usuario($usuario_id) as $cupon)?>
+                <option value="<?=hh($cupon["id"])?>">Del cupon <?=hh($cupon["nombre"])?>, tienes <?=hh($cupon["cantidad"])?> unidades</option>
+            </select>
+            <button type="submit" class="inline-flex items-center py-2 px-3.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Aplicar cupon</button>
+        </form>
             <table class="mx-auto text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <th scope="col" class="py-3 px-6">Código</th>
@@ -90,8 +99,47 @@
                         $codigo = $articulo->getCodigo();
                         $cantidad = $linea->getCantidad();
                         $precio = $articulo->getPrecio();
-                        $importe = $cantidad * $precio;
+
+                        $articulo_id = $articulo->getId();
+                        $oferta_id= obtener_ofertas_id($articulo_id);
+
+                        $restante = 1;
+                        $extra = 0;
+
+                        $cupon_id = obtener_get('cupon');
+                        $descuento = obtener_descuento($cupon_id);
+
+
+                        switch($oferta_id){
+                            case 1:
+                                if ($cantidad ==1){
+                                    $restante = 1;
+                                    break;
+                                }
+                                if ($cantidad ==2){
+                                    $restante = 0.5;
+                                    break;
+                                } else{
+                                    $extra = $precio;
+                                    break;
+                                }
+                            case 2:
+                                $restante = 0.75;
+                                break;
+                            case 3:
+                                $restante = 0.75;
+                                break;
+                            default:
+                                $restante = 1;
+                                $extra = 0;
+                                break;
+                        };
+
+                        $importe = ($cantidad * $precio)*$restante - $extra;
                         $total += $importe;
+
+                        $total_restado = $total*($descuento/100);
+                        $total = $total - $total_restado;
                         ?>
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td class="py-4 px-6"><?= $articulo->getCodigo() ?></td>
@@ -110,6 +158,9 @@
                     <td colspan="3"></td>
                     <td class="text-center font-semibold">TOTAL:</td>
                     <td class="text-center font-semibold"><?= dinero($total) ?></td>
+                    <?php if (isset($cupon_id) && $cupon_id!=null):?>
+                        <td class="text-center font-semibold">se ha descontado por el cupon: <?= hh($total_restado) ?></td>
+                    <?php endif?>
                 </tfoot>
             </table>
             <form action="" method="POST" class="mx-auto flex mt-4">
